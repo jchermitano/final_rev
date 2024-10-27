@@ -21,7 +21,7 @@ const AdminPanel = () => {
       localStorage.setItem('token', response.data.token);
 
       // Redirect to the dashboard
-      navigate('/dashboard');
+      navigate('/logs');
     } catch (error) {
       setError(error.response?.data?.error || 'Login failed');
     }

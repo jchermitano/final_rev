@@ -9,14 +9,21 @@ function Log() {
   useEffect(() => {
     axios.get('http://localhost:4000/getUsersFromDB2')
       .then(response => {
-        console.log(response.data);
-        setUsers(response.data);
+        const sortedUsers = response.data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        setUsers(sortedUsers);
       })
       .catch(err => {
         console.error('Error fetching data:', err);
       });
   }, []);
-  
+
+  function secondsToHms(seconds) {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  }
+
   return (
     <div className="log-container">
       <h2 className="log-title">Logs</h2>
@@ -37,11 +44,10 @@ function Log() {
               <tr key={index}>
                 <td>{user.email}</td>
                 <td>{user.student_number}</td>
-                <td>{user.login_date.substring(0, 10)}</td> {/* Extract date from the login_date string */}
-                <td>{user.remaining_time}</td>
-                <td>{user.timestamp.substring(0, 19)}</td> {/* Shows full date and time in one line */}
-                <td>{user.logout_time.substring(0, 19)}</td> {/* Shows full date and time in one line */}
-
+                <td>{user.login_date.substring(0, 10)}</td>
+                <td>{secondsToHms(parseInt(user.remaining_time))}</td>
+                <td>{user.timestamp.substring(0, 19)}</td>
+                <td>{user.logout_time.substring(0, 19)}</td>
               </tr>
             ))}
           </tbody>
